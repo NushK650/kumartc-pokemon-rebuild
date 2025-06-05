@@ -1,103 +1,129 @@
-import Image from "next/image";
+'use client'
+import {useEffect, useState } from "react";
+import PokemonDisplayComp from "@/Components/PokemonDisplayComp";
+import SearchbarComp from "@/Components/SearchbarComp";
+import PokemonNameComp from "@/Components/PokemonNameComp";
+import PokemonFavListComp from "@/Components/PokemonFavListComp";
+import PokemonInfoComp from "@/Components/PokemonInfoComp";
+
+interface PokemonType {
+  name: string;
+  id: number;
+  sprites: {
+    front_default: string;
+    other: {
+      "official-artwork": {
+        front_default: string;
+        front_shiny: string;
+      };
+    };
+  };
+  types: { type: { name: string } }[];
+  abilities: { ability: { name: string } }[];
+  moves: { move: { name: string } }[];
+  species: { url: string };
+  location_area_encounters: string;
+}
+
+export interface ProcessedPokemonData {
+  name: string;
+  id: number;
+  types: string;
+  moves: string;
+  abilities: string;
+  defaultImg: string;
+  shinyImg: string;
+  locationName: string;
+  evoChain: string[];
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [pokemonData, setPokemonData] = useState<PokemonType | null>(null);
+  const [pokemonInfo, setPokemonInfo] = useState<ProcessedPokemonData | null>(null);
+  const [showFavList, setShowFavList] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    setFavorites(storedFavorites);
+  }, []);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  const removeFavorite = (nameToRemove: string) => {
+    const storedFavorites: string[] = JSON.parse(localStorage.getItem("favorites") || "[]");
+    const updatedFavorites = storedFavorites.filter(name => name !== nameToRemove);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    setFavorites(updatedFavorites);
+  };
+
+  const getData = async (pokemon: string) => {
+    try {
+      const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.toLowerCase()}`);
+      if (!response.ok) throw new Error("Pokemon not found");
+      const data: PokemonType = await response.json();
+
+      const locationResponse = await fetch(data.location_area_encounters);
+      const locationData = await locationResponse.json();
+
+      const speciesResponse = await fetch(data.species.url);
+      const speciesData = await speciesResponse.json();
+
+      const evolutionResponse = await fetch(speciesData.evolution_chain.url);
+      const evolutionData = await evolutionResponse.json();
+
+      let evoStage = evolutionData.chain;
+      let evoChain = [evoStage.species.name];
+      for (let i = 0; i < evoStage.evolves_to.length; i++) {
+        evoChain.push(evoStage.evolves_to[i].species.name);
+        for (let j = 0; j < evoStage.evolves_to[i].evolves_to.length; j++) {
+          evoChain.push(evoStage.evolves_to[i].evolves_to[j].species.name);
+        }
+      }
+
+      const moveNames = data.moves.map((m) => m.move.name).join(", ");
+      const abilitiesNames = data.abilities.map((a) => a.ability.name).join(", ");
+      const types = data.types.map((t) => t.type.name).join(", ");
+      const defaultImg = data.sprites.other["official-artwork"].front_default;
+      const shinyImg = data.sprites.other["official-artwork"].front_shiny;
+      const locationName = locationData.length > 0 ? locationData[0].location_area.name.replace(/-/g, " ") : "N/A";
+
+      setPokemonData(data);
+
+      setPokemonInfo({
+        name: data.name,
+        id: data.id,
+        types,
+        moves: moveNames,
+        abilities: abilitiesNames,
+        defaultImg,
+        shinyImg,
+        locationName,
+        evoChain,
+      });
+    } catch (error: any) {
+      console.error("Error fetching pokemon data:", error.message);
+      setPokemonData(null);
+      setPokemonInfo(null);
+    }
+  };
+
+ 
+  const toggleFavList = () => {
+    setShowFavList(prev => !prev);
+  };
+
+  return (
+    <div className="bg-[url(/assets/images/PokemonBackgroundMain.png)] bg-cover bg-gray-100 min-h-screen min-w-screen text-black">
+    
+      <SearchbarComp onSearch={getData} hideFavList={toggleFavList} currentPokemon={pokemonInfo}/>
+
+      <PokemonNameComp name={pokemonInfo?.name} />
+
+      {showFavList && (<PokemonFavListComp hideFavList={toggleFavList} favorites={favorites} removeFavorite={removeFavorite} />)}
+
+      <div className="xl:justify-between flex max-xl:flex-col-reverse max-xl:justify-center max-xl:items-center">
+        <PokemonInfoComp info={pokemonInfo} />
+        <PokemonDisplayComp images={{ defaultImg: pokemonInfo?.defaultImg, shinyImg: pokemonInfo?.shinyImg }} />
+      </div>
     </div>
   );
 }
