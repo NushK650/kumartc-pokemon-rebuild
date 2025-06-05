@@ -6,10 +6,11 @@ type Props = {
   onSearch: (pokemon: string) => void;
   hideFavList: () => void;
   currentPokemon: ProcessedPokemonData | null;
+  toggleFavorite: (name: string) => void;
 
 };
 
-const SearchbarComp = ({ onSearch, hideFavList, currentPokemon }: Props) => {
+const SearchbarComp = ({ onSearch, hideFavList, currentPokemon, toggleFavorite }: Props) => {
   const [input, setInput] = useState('');
   const [switchFavorite, setSwitchFavorite] = useState<boolean>(true);
 
@@ -19,22 +20,8 @@ const SearchbarComp = ({ onSearch, hideFavList, currentPokemon }: Props) => {
   }
 
   const handleFavorite = () => {
-    if (!currentPokemon || !currentPokemon.name) return;
-  
-    const storedFavorites: string[] = JSON.parse(localStorage.getItem("favorites") || "[]");
-  
-    const currentName = currentPokemon.name.toLowerCase();
-    const isAlreadyFavorite = storedFavorites.includes(currentName);
-  
-    let updatedFavorites: string[];
-  
-    if (isAlreadyFavorite) {
-      updatedFavorites = storedFavorites.filter(name => name !== currentName);
-    } else {
-      updatedFavorites = [...storedFavorites, currentName];
-    }
-  
-    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    if (!currentPokemon?.name) return;
+    toggleFavorite(currentPokemon.name.toLowerCase());
     setSwitchFavorite(!switchFavorite);
   };
   

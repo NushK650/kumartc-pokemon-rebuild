@@ -48,6 +48,19 @@ export default function Home() {
     setFavorites(storedFavorites);
   }, []);
 
+  const toggleFavorite = (name: string) => {
+    const storedFavorites: string[] = JSON.parse(localStorage.getItem("favorites") || "[]");
+    const isAlreadyFavorite = storedFavorites.includes(name);
+  
+    const updatedFavorites = isAlreadyFavorite
+      ? storedFavorites.filter(fav => fav !== name)
+      : [...storedFavorites, name];
+  
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    setFavorites(updatedFavorites);
+  };
+  
+
   const removeFavorite = (nameToRemove: string) => {
     const storedFavorites: string[] = JSON.parse(localStorage.getItem("favorites") || "[]");
     const updatedFavorites = storedFavorites.filter(name => name !== nameToRemove);
@@ -70,8 +83,8 @@ export default function Home() {
       const evolutionResponse = await fetch(speciesData.evolution_chain.url);
       const evolutionData = await evolutionResponse.json();
 
-      let evoStage = evolutionData.chain;
-      let evoChain = [evoStage.species.name];
+      const evoStage = evolutionData.chain;
+      const evoChain = [evoStage.species.name];
       for (let i = 0; i < evoStage.evolves_to.length; i++) {
         evoChain.push(evoStage.evolves_to[i].species.name);
         for (let j = 0; j < evoStage.evolves_to[i].evolves_to.length; j++) {
@@ -114,8 +127,12 @@ export default function Home() {
   return (
     <div className="bg-[url(/assets/images/PokemonBackgroundMain.png)] bg-cover bg-gray-100 min-h-screen min-w-screen text-black">
     
-      <SearchbarComp onSearch={getData} hideFavList={toggleFavList} currentPokemon={pokemonInfo}/>
-
+    <SearchbarComp
+  onSearch={getData}
+  hideFavList={toggleFavList}
+  currentPokemon={pokemonInfo}
+  toggleFavorite={toggleFavorite}
+/>
       <PokemonNameComp name={pokemonInfo?.name} />
 
       {showFavList && (<PokemonFavListComp hideFavList={toggleFavList} favorites={favorites} removeFavorite={removeFavorite} />)}
