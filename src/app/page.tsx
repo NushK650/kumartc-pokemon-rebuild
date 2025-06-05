@@ -38,7 +38,7 @@ export interface ProcessedPokemonData {
 }
 
 export default function Home() {
-  const [pokemonData, setPokemonData] = useState<PokemonType | null>(null);
+  
   const [pokemonInfo, setPokemonInfo] = useState<ProcessedPokemonData | null>(null);
   const [showFavList, setShowFavList] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -99,7 +99,7 @@ export default function Home() {
       const shinyImg = data.sprites.other["official-artwork"].front_shiny;
       const locationName = locationData.length > 0 ? locationData[0].location_area.name.replace(/-/g, " ") : "N/A";
 
-      setPokemonData(data);
+      
 
       setPokemonInfo({
         name: data.name,
@@ -112,9 +112,12 @@ export default function Home() {
         locationName,
         evoChain,
       });
-    } catch (error: any) {
-      console.error("Error fetching pokemon data:", error.message);
-      setPokemonData(null);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error message:", error.message);
+      } else {
+        console.error("Unexpected error", error);
+      }
       setPokemonInfo(null);
     }
   };
