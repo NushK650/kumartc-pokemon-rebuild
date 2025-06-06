@@ -34,3 +34,6 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+Peer Review: Aaron Robinson
+The site works as intended and fetches info from the api with moderate speed, one nitpick would be to format the moves in the moves list to remove the dashes to improve legibility, pretty easy function to acheieve that with a .split("-").join(" "), site looks great!
