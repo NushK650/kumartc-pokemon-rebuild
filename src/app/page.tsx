@@ -128,21 +128,49 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-[url(/assets/images/PokemonBackgroundMain.png)] bg-cover bg-gray-100 min-h-screen min-w-screen text-black">
-    
-    <SearchbarComp
-  onSearch={getData}
-  hideFavList={toggleFavList}
-  currentPokemon={pokemonInfo}
-  toggleFavorite={toggleFavorite}
-/>
-      <PokemonNameComp name={pokemonInfo?.name} />
+    <div className="pokedex-bg min-h-screen text-[#161616]">
+      <div className="mx-auto max-w-6xl px-4 pb-16">
+        <header className="pt-8">
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <p className="text-xs uppercase tracking-[0.3em] text-[#0f766e] font-semibold">
+                Pocket Research Station
+              </p>
+              <h1 className="font-[family:var(--font-display)] text-4xl sm:text-5xl tracking-wide text-[#1b1b1b]">
+                PokeLab Index
+              </h1>
+            </div>
+            <div className="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs uppercase tracking-[0.2em] text-[#ff7a3c] backdrop-blur">
+              Kanto to Paldea
+            </div>
+          </div>
 
-      {showFavList && (<PokemonFavListComp hideFavList={toggleFavList} favorites={favorites} removeFavorite={removeFavorite} />)}
+          <div className="mt-6">
+            <SearchbarComp
+              onSearch={getData}
+              hideFavList={toggleFavList}
+              currentPokemon={pokemonInfo}
+              toggleFavorite={toggleFavorite}
+            />
+          </div>
+        </header>
 
-      <div className="xl:justify-between flex max-xl:flex-col-reverse max-xl:justify-center max-xl:items-center">
-        <PokemonInfoComp info={pokemonInfo} />
-        <PokemonDisplayComp images={{ defaultImg: pokemonInfo?.defaultImg, shinyImg: pokemonInfo?.shinyImg }} />
+        <PokemonNameComp name={pokemonInfo?.name} />
+
+        {showFavList && (
+          <PokemonFavListComp
+            hideFavList={toggleFavList}
+            favorites={favorites}
+            removeFavorite={removeFavorite}
+          />
+        )}
+
+        <main className="mt-8 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] items-start">
+          <PokemonInfoComp info={pokemonInfo} />
+          <PokemonDisplayComp
+            images={{ defaultImg: pokemonInfo?.defaultImg, shinyImg: pokemonInfo?.shinyImg }}
+          />
+        </main>
       </div>
     </div>
   );

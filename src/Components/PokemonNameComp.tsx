@@ -6,12 +6,15 @@ interface PokemonNameCompProps {
 
 const PokemonNameComp: React.FC<PokemonNameCompProps> = ({ name }) => {
   return (
-    <div className="flex justify-center mt-40">
-      <h2
-        className="bg-white w-[550px] rounded-[20px] pl-5 h-[50px] sm:h-[60px] border-2 border-black font-semibold text-center text-[20px] pt-2 sm:pt-3"
-      >
-        {name ? name.toUpperCase() : "Pokemon"}
-      </h2>
+    <div className="mt-10 flex items-center justify-center">
+      <div className="w-full max-w-3xl rounded-3xl border border-black/10 bg-white/80 px-6 py-4 shadow-sm backdrop-blur">
+        <p className="text-xs uppercase tracking-[0.35em] text-black/40">
+          Current Entry
+        </p>
+        <h2 className="font-[family:var(--font-display)] text-3xl sm:text-4xl tracking-wide text-[#1b1b1b]">
+          {name ? name.toUpperCase() : "POKEMON"}
+        </h2>
+      </div>
     </div>
   );
 };
