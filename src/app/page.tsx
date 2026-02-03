@@ -152,6 +152,7 @@ export default function Home() {
               hideFavList={toggleFavList}
               currentPokemon={pokemonInfo}
               toggleFavorite={toggleFavorite}
+              favorites={favorites}
             />
           </div>
         </header>

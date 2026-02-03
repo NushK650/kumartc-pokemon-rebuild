@@ -7,12 +7,15 @@ type Props = {
   hideFavList: () => void;
   currentPokemon: ProcessedPokemonData | null;
   toggleFavorite: (name: string) => void;
+  favorites: string[];
 
 };
 
-const SearchbarComp = ({ onSearch, hideFavList, currentPokemon, toggleFavorite }: Props) => {
+const SearchbarComp = ({ onSearch, hideFavList, currentPokemon, toggleFavorite, favorites }: Props) => {
   const [input, setInput] = useState('');
-  const [switchFavorite, setSwitchFavorite] = useState<boolean>(false);
+  const isFavorite = currentPokemon?.name
+    ? favorites.includes(currentPokemon.name.toLowerCase())
+    : false;
 
   const randomPokemon = ()=>{
     const randomId = Math.floor(Math.random() * 1005) + 1; 
@@ -22,7 +25,6 @@ const SearchbarComp = ({ onSearch, hideFavList, currentPokemon, toggleFavorite }
   const handleFavorite = () => {
     if (!currentPokemon?.name) return;
     toggleFavorite(currentPokemon.name.toLowerCase());
-    setSwitchFavorite(!switchFavorite);
   };
   
 
@@ -74,7 +76,7 @@ const SearchbarComp = ({ onSearch, hideFavList, currentPokemon, toggleFavorite }
       >
         <img
           className="h-5 sm:h-6"
-          src={switchFavorite ? "/assets/icons/pokeball.png" : "/assets/icons/pokeball (1).png"}
+          src={isFavorite ? "/assets/icons/pokeball.png" : "/assets/icons/pokeball (1).png"}
           alt=""
         />
       </button>
