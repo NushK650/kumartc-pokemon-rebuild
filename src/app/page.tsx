@@ -46,6 +46,7 @@ export default function Home() {
   useEffect(() => {
     const storedFavorites = JSON.parse(localStorage.getItem("favorites") || "[]");
     setFavorites(storedFavorites);
+    getData("pikachu");
   }, []);
 
   const toggleFavorite = (name: string) => {
