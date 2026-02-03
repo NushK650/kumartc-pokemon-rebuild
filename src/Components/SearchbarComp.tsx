@@ -76,7 +76,7 @@ const SearchbarComp = ({ onSearch, hideFavList, currentPokemon, toggleFavorite, 
       >
         <img
           className="h-5 sm:h-6"
-          src={isFavorite ? "/assets/icons/pokeball.png" : "/assets/icons/pokeball (1).png"}
+          src={isFavorite ? "/assets/icons/pokeball (1).png" : "/assets/icons/pokeball.png"}
           alt=""
         />
       </button>
